@@ -1,36 +1,108 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Task Board
 
-## Getting Started
+A simple task management application built with Next.js featuring authentication, task CRUD, status filtering, compact dashboard statistics, and AI-powered task suggestions.
 
-First, run the development server:
+## Table of Contents
+- Project Overview
+- Features
+- Tech Stack
+- Directory Structure
+- Getting Started
+- Environment Variables
+- Development
+- API Summary
+- Deployment
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Project Overview
+This project is a Next.js App Router application that helps users manage daily tasks. It includes login and registration, a dashboard to view and filter tasks, create and edit modals, a custom delete confirmation modal, and an AI suggestions modal to generate task ideas.
+
+The UI is styled with Tailwind CSS and uses Lucide icons. Client-side state is managed with Zustand. HTTP requests are handled through an Axios client with an interceptor that attaches the auth token stored in localStorage.
+
+## Features
+- User authentication: register, login, and profile retrieval
+- Task CRUD: create, update status, edit, and delete
+- Status filtering: all, todo, in_progress, done
+- Dashboard statistics: compact cards showing counts and completion rate
+- AI suggestions: generate task ideas from context and add them quickly
+- Responsive, clean UI with modals for task creation, editing, and deletion
+
+## Tech Stack
+- Next.js (App Router)
+- Tailwind CSS
+- Zustand (state management)
+- Axios (HTTP client)
+- Lucide React (icons)
+- date-fns (date utilities)
+
+## Directory Structure
+```
+src/
+  app/
+    page.js           # Redirect based on auth
+    layout.js         # Root layout and global styles
+    login/page.js     # Login page
+    register/page.js  # Registration page
+    dashboard/page.js # Main dashboard
+  components/
+    DashboardHeader.js
+    TaskStats.js
+    TaskList.js
+    TaskCard.js
+    CreateTaskModal.js
+    EditTaskModal.js
+    ConfirmDeleteModal.js
+    AISuggestionModal.js
+  lib/
+    api.js            # Axios client and API helpers
+  store/
+    authStore.js      # Auth state (token, user)
+    taskStore.js      # Tasks state
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Getting Started
+Prerequisites:
+- Node.js 18+ and npm
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+Install dependencies and start the dev server:
+```bash
+npm install
+npm run dev
+```
+Open the app in your browser. By default Next.js uses `http://localhost:3000`. If a different port is shown in the terminal, use that address.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Environment Variables
+The API client reads the base URL from `NEXT_PUBLIC_API_URL`.
 
-## Learn More
+Example `.env.local`:
+```
+NEXT_PUBLIC_API_URL=http://localhost:3001
+```
 
-To learn more about Next.js, take a look at the following resources:
+If this variable is not set, the client defaults to `http://localhost:3001`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Development
+- Global styles live in `src/app/globals.css` and Tailwind config in `tailwind.config.js`.
+- The Axios client (`src/lib/api.js`) automatically attaches the auth token from localStorage to requests.
+- State is persisted in localStorage via Zustand.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## API Summary
+The frontend expects a backend exposing these endpoints:
 
-## Deploy on Vercel
+- Auth
+  - `POST /auth/register` — create an account
+  - `POST /auth/login` — obtain `accessToken` and user
+  - `GET /auth/me` — fetch current user profile
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Tasks
+  - `GET /tasks` — list tasks
+  - `GET /tasks/:id` — get a task
+  - `POST /tasks` — create a task
+  - `PATCH /tasks/:id` — update a task
+  - `DELETE /tasks/:id` — delete a task
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- AI
+  - `POST /ai/suggestions` — generate task suggestions from `{ context }`
+
+## Deployment
+You can deploy to any platform that supports Next.js. For Vercel, follow the official Next.js deployment guide:
+https://nextjs.org/docs/app/building-your-application/deploying
